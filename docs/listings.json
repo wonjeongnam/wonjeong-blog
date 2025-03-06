@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/palmer_penguins/palmer-penguins.html",
       "/posts/post-with-code/index.html",
       "/posts/welcome/index.html"
     ]
