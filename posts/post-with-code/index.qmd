@@ -1,15 +1,146 @@
 ---
-title: "Post With Code"
-author: "Harlow Malloc"
-date: "2025-03-06"
-categories: [news, code, analysis]
-image: "image.jpg"
+title: "Palmer-Penguins 분석"
+format:
+    html:
+        code-fold: true
+        toc: true
+number-sections: true
+jupyter: python3
 ---
+<br>
+4조: 박동호, 김윤희, 남원정
+<br>
 
-This is a post with executable code.
+# 분석 주제: 팔머 펭귄 종들에 대한 특징 파악
+<br>
+<br>
+
+## 팔머 펭귄 데이터 파악
+- 변수명 정의
+    - species: 펭귄의 종
+    - island: 펭귄이 서식하는 섬
+    - bill_length_mm: 부리의 길이(밀리미터 단위)
+    - bill_depth_mm: 부리의 깊이(밀리미터 단위)
+    - flipper_length_mm: 날개의 길이(밀리미터 단위)
+    - body_mass_g: 몸무게(그램 단위)
+    - sex: 펭귄의 성별
+    - year: 데이터가 수집된 연도
+
+### 데이터 및 라이브러리 불러오기
 
 ```{python}
+import pandas as pd
 import numpy as np
-a = np.arange(10)
-a
+
+from palmerpenguins import load_penguins
+penguins = load_penguins()
+```
+
+### 데이터 보기
+```{python}
+penguins.head()
+```
+
+```{python}
+penguins.info()
+```
+
+### 펭귄 종 파악
+```{python}
+penguins['species'].value_counts()
+```
+
+Adelie, Gentoo, Chinstrap 종이 각각 152, 124, 68마리 데이터가 있는 것을 확인할 수 있다.
+
+## 결측값 처리
+### 결측값 파악
+- 부리의 길이, 부리의 깊이, 날개의 길이, 몸무게, 성별에 결측값 존재.
+```{python}
+penguins.isna().sum()
+penguins
+```
+
+- 부리의 길이, 부리의 깊이, 날개의 길이, 몸무게 변수의 결측치가 같은 행에 있음.
+```{python}
+penguins[penguins['bill_length_mm'].isna()]
+```
+
+
+
+### 결측값 제거
+
+- 성별을 제외한 나머지 결측값이 같은 행에 있어, 그 행들을 제외하고 분석 수행.
+```{python}
+new_penguins = penguins[~penguins['bill_length_mm'].isna()]
+```
+
+## 종별 특징 파악
+### 종별로 데이터 나누기 
+
+```{python}
+Adelie_peng = new_penguins.loc[new_penguins['species'] == 'Adelie']
+Gentoo_peng = new_penguins.loc[new_penguins['species'] == 'Gentoo']
+Chinstrap_peng = new_penguins.loc[new_penguins['species'] == 'Chinstrap']
+```
+
+### 종별 사는 서식지 비교
+
+-   **`Adelie`**는 Dream, Torgersen, Biscoe 지역에 서식하며, **`gentoo`**는 Biscoe에 살고 **`Chinstrap`**는 Dream에 서식하고 있음
+```{python}
+print(Adelie_peng['island'].value_counts().rename('Adelie'),'\n') #Adelie의 사는 지역 
+print(Gentoo_peng['island'].value_counts().rename('Gentoo'),'\n') # Gentoo의 사는 지역
+print(Chinstrap_peng['island'].value_counts().rename('Chinstrap'),'\n') # Chinstrap의 사는 지역
+```
+
+### 3) 종별 신체 특징 비교
+- **`Adelie`** 가 평균적으로 `부리길이가 작은 편`에 속하고, `지느러미가 짧은 편`임.
+-   **`gentoo`**가 평균적으로 부리의 길이에 비해 폭이 좁고고 `무게가 상대적으로 조금 더 나가는 편`이고 `지느러미 길이가 큰 편`임.
+
+-   **`Chinstrap`**는 지느러미 길이에서 `표준편차가 큰 편`이었음
+
+```{python}
+Adelie_peng.describe(),'\n'   # Adelie의 기술통계량
+Gentoo_peng.describe(),'\n'   # Gentoo 기술통계량
+Chinstrap_peng.describe(),'\n' # Chinstrap 기술통계량
+
+pd.concat([Adelie_peng.describe(), Gentoo_peng.describe(), Chinstrap_peng.describe()],keys=['Adelie','Gentoo','Chinstrap'])
+
+```
+
+| 펭귄 평균       | bill_length_mm | bill_depth_mm  | flipper_length_mm | body_mass_g |
+|-----------------|----------------|----------------|-------------------|-------------|
+| **`Adelie`**    | 38.791391      | 18.346358      | 189.953642        | 3700.662252 |
+| **`gentoo`**    | 47.504878      | 14.982114      | 217.186992        | 5076.016260 |
+| **`Chinstrap`** | 48.833824      | 18.420588      | 195.823529        | 3733.088235 |
+
+| 펭귄 최소       | bill_length_mm | bill_depth_mm | flipper_length_mm | body_mass_g |
+|-----------------|----------------|---------------|-------------------|-------------|
+| **`Adelie`**    | 32.100000      | 15.500000     | 172.000000        | 2850.000000 |
+| **`gentoo`**    | 40.900000      | 13.100000     | 203.000000        | 3950.000000 |
+| **`Chinstrap`** | 40.900000      | 16.40000      | 178.000000        | 2700.00000  |
+
+| 펭귄 최대       | bill_length_mm | bill_depth_mm | flipper_length_mm | body_mass_g |
+|-----------------|----------------|---------------|-------------------|-------------|
+| **`Adelie`**    | 46.000000      | 21.500000     | 210.000000        | 4775.000000 |
+| **`gentoo`**    | 59.600000      | 17.300000     | 231.000000        | 6300.000000 |
+| **`Chinstrap`** | 58.000000      | 20.800000     | 212.000000        | 4800.000000 |
+
+
+
+
+### 종별 성별 개체 수 비교
+- 각 종별 성별 개체 수 차이는 크게 나지 않음. 
+```{python}
+print(Adelie_peng['sex'].value_counts().rename('Adelie'),'\n')   #Adelie의 성별 개체 수
+print(Gentoo_peng['sex'].value_counts().rename('Gentoo'),'\n')   #Gentoo 성별 개체 수
+print(Chinstrap_peng['sex'].value_counts().rename('Chinstrap'),'\n') #Chinstrap 성별 개체 수
+
+```
+
+### 종별 연도별 개체 수 비교
+-   가장 많이 관찰된 년도는 **`Adelie`**는 2009년, **`gentoo`** 2008년,**`Chinstrap`**는 2007년에 가장 많았음
+```{python}
+print(Adelie_peng['year'].value_counts().rename('Adelie'),'\n')  #Adelie의 연도별 개체수
+print(Gentoo_peng['year'].value_counts().rename('Gentoo'),'\n')  #Gentoo의 연도별 개체수
+print(Chinstrap_peng['year'].value_counts().rename('Chinstrap').rename('Chinstrap'),'\n') #Chinstrap의 연도별 개체수
 ```
