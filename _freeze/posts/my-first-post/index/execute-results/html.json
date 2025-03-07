@@ -1,0 +1,12 @@
+{
+  "hash": "fcadb0e595f6ad3a7198ee0035119a3a",
+  "result": {
+    "engine": "jupyter",
+    "markdown": "---\ntitle: \"나의 첫 블로그 포스트\"\nauthor: \"Nam Wonjeong\"\ndate: \"2025-03-07\"\ncategories: [python, pandas, numpy]\nimage: 'image.jpg'\n---\n\n\n## 파이썬 데이터 분석\n\n### 넘파이\n\n넘파이 패키지를 불러옵시다!\n\n::: {#d9e34635 .cell execution_count=1}\n``` {.python .cell-code}\nimport numpy as np\n\na = np.array([3,2,15])\na\n```\n\n::: {.cell-output .cell-output-display execution_count=1}\n```\narray([ 3,  2, 15])\n```\n:::\n:::\n\n\n### 판다스\n\n판다스 패키지를 불러옵시다!\n\n::: {#6f200be6 .cell execution_count=2}\n``` {.python .cell-code}\nimport pandas as pd\n```\n:::\n\n\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

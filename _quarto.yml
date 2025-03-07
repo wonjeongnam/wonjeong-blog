@@ -3,14 +3,12 @@ project:
   output-dir: docs
 
 website:
-  title: "wonjeong-blog"
+  title: "Ls 빅데이터 스쿨 4기 - 남원정 qmd 블로그"
   navbar:
     right:
       - about.qmd
       - icon: github
-        href: https://github.com/
-      - icon: twitter
-        href: https://twitter.com
+        href: https://wonjeongnam.github.io/wonjeong-blog/
 format:
   html:
     theme:
